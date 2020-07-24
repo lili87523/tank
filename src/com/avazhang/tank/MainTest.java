@@ -15,6 +15,7 @@ public class MainTest {
 //            }
 //        });
         TankFrame tf = new TankFrame();
+       // CopyTankFrame ctf = new CopyTankFrame();
         while(true){
             Thread.sleep(50);
             tf.repaint();

@@ -5,14 +5,16 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 public class TankFrame extends Frame {
-    int x = 200, y = 200;
-    Dir dir = Dir.DOWN;
-    final int SPEED = 10;
+    static final int GAME_WIDTH = 800, GAME_HEIGHT = 600;
+    Tank myTank = new Tank(200, 200, Dir.DOWN, this);
+    ArrayList<Bullet> bullets = new ArrayList<>();
+    Bullet b = new Bullet(300, 300, Dir.DOWN, this);
 
     public TankFrame() throws HeadlessException {
-        this.setSize(800, 600);
+        this.setSize(GAME_WIDTH, GAME_HEIGHT);
         this.setResizable(true);
         this.setTitle("tank war");
         this.setVisible(true);
@@ -27,35 +29,46 @@ public class TankFrame extends Frame {
         this.addKeyListener(new MyKeyListener());
     }
 
+
+    //to avoid the blink on the screen, we can draw our image in memory, and after it is ready, transfer it all-in-one to the screen
+    //update() is called before paint()
+    Image offScreenImage = null;
+    @Override
+    public void update(Graphics g){
+        if(offScreenImage == null){
+            offScreenImage = this.createImage(GAME_WIDTH, GAME_HEIGHT);
+        }
+        Graphics gOffScreen = offScreenImage.getGraphics();
+        Color c = gOffScreen.getColor();
+        gOffScreen.setColor(Color.BLACK);
+        gOffScreen.fillRect(0,0, GAME_WIDTH, GAME_HEIGHT);
+        gOffScreen.setColor(c);
+        paint(gOffScreen);
+        g.drawImage(offScreenImage, 0, 0, null);
+    }
+
     /*The method of paint will be automatically called whenever the window will be changed.
     except closing*/
     @Override
     public void paint(Graphics g){  //Graphics is a pen for you to draw in the window
         //System.out.println("paint");
-        g.fillRect(x, y, 50, 50 );
         //x += 10;  //change the coordinate so the rectangle will move
         //y += 10;
+        Color c = g.getColor();
+        g.setColor(Color.GREEN);
+        g.drawString("Bullets quantity:" + bullets.size(), 350, 60);
+        g.setColor(c);
 
-        //using paint() to move the object
-        switch(dir){
-            case LEFT:
-                x -= SPEED;
-                break;
-            case RIGHT:
-                x += SPEED;
-                break;
-            case UP:
-                y -= SPEED;
-                break;
-            case DOWN:
-                y += SPEED;
-                break;
-            default:
-                break;
-
+        myTank.paint(g);
+        //this method will cause concurrent problem
+//        for(Bullet b : bullets){
+//            b.paint(g);
+//        }
+        for(int i = 0; i < bullets.size(); i++){
+            bullets.get(i).paint(g);
         }
-
     }
+
 
     //create a class for keyboard listener
     //MyKeyListener just listen which key is pressed or released; no movement here
@@ -80,6 +93,9 @@ public class TankFrame extends Frame {
                     break;
                 case KeyEvent.VK_DOWN:
                     bD = true;
+                    break;
+                case KeyEvent.VK_CONTROL:
+                    myTank.fire();
                     break;
                 default:
                     break;
@@ -113,10 +129,18 @@ public class TankFrame extends Frame {
         }
 
         public void setMainTankDir(){
-            if(bL) dir = Dir.LEFT;
-            if(bR) dir = Dir.RIGHT;
-            if(bU) dir = Dir.UP;
-            if(bD) dir = Dir.DOWN;
+            if(!bL && !bR && !bU && !bD) {
+                myTank.setMoving(false);
+            }
+            else {
+                myTank.setMoving(true);
+                if (bL) myTank.setDir(Dir.LEFT);
+                if (bR) myTank.setDir(Dir.RIGHT);
+                if (bU) myTank.setDir(Dir.UP);
+                if (bD) myTank.setDir(Dir.DOWN);
+            }
+
+
         }
     }
 }

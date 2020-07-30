@@ -6,12 +6,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TankFrame extends Frame {
     static final int GAME_WIDTH = 800, GAME_HEIGHT = 600;
-    Tank myTank = new Tank(200, 200, Dir.DOWN, this);
-    ArrayList<Bullet> bullets = new ArrayList<>();
-    Bullet b = new Bullet(300, 300, Dir.DOWN, this);
+    Tank myTank = new Tank(200, 500, Dir.DOWN, this);
+    List<Bullet> bullets = new ArrayList<>();
+    List<Tank> tanks = new ArrayList<>();
+    Bullet b = new Bullet(200, 200, Dir.DOWN, this);
 
     public TankFrame() throws HeadlessException {
         this.setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -60,6 +62,10 @@ public class TankFrame extends Frame {
         g.setColor(c);
 
         myTank.paint(g);
+
+        for(int i = 0; i < tanks.size(); i++){
+            tanks.get(i).paint(g);
+        }
         //this method will cause concurrent problem
 //        for(Bullet b : bullets){
 //            b.paint(g);

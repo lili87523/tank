@@ -3,7 +3,7 @@ package com.avazhang.tank;
 import java.awt.*;
 
 public class Bullet {
-    private static final int SPEED = 10, WIDTH = 10, HEIGHT = 10;
+    public static final int SPEED = 10, WIDTH = ResourceMgr.bulletD.getWidth(), HEIGHT = ResourceMgr.bulletD.getHeight();
     private int x, y;
     private Dir dir;
     private boolean live = true;
@@ -20,10 +20,24 @@ public class Bullet {
         if(!live){
             tf.bullets.remove(this);
         }
-        Color c = g.getColor();
-        g.setColor(Color.RED);
-        g.fillOval(x, y, WIDTH,HEIGHT);
-        g.setColor(c);
+//        Color c = g.getColor();
+//        g.setColor(Color.RED);
+//        g.fillOval(x, y, WIDTH,HEIGHT);
+//        g.setColor(c);
+        switch(dir){
+            case DOWN:
+                g.drawImage(ResourceMgr.bulletD, x, y, null);
+                break;
+            case UP:
+                g.drawImage(ResourceMgr.bulletU, x, y, null);
+                break;
+            case LEFT:
+                g.drawImage(ResourceMgr.bulletL, x, y, null);
+                break;
+            case RIGHT:
+                g.drawImage(ResourceMgr.bulletR, x, y, null);
+                break;
+        }
         move();
     }
 

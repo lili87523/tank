@@ -1,22 +1,36 @@
 package com.avazhang.tank;
 
 import java.awt.*;
+import java.util.Random;
 
 public class Tank {
     private int x, y;
     private Dir dir;
-    private final int SPEED = 5;
-    private boolean moving = false;
+    private final int SPEED = 1;
+    private boolean moving = true;
     private TankFrame tf;
+    boolean isLiving = true;
+    private Random random = new Random();
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    private Group group = Group.BAD;
 
     public static int WIDTH = ResourceMgr.tankD.getWidth();
     public static int HEIGHT = ResourceMgr.tankD.getHeight();
 
-    public Tank(int x, int y, Dir dir, TankFrame tf) {
+    public Tank(int x, int y, Dir dir, Group group, TankFrame tf) {
         super();
         this.x = x;
         this.y = y;
         this.dir = dir;
+        this.group = group;
         this.tf = tf;
     }
 
@@ -26,6 +40,9 @@ public class Tank {
         //g.setColor(Color.YELLOW);
         //g.fillRect(x, y, 50, 50);
         //g.setColor(c);
+        if(!isLiving){
+            tf.tanks.remove(this);
+        }
         switch(dir){
             case DOWN:
                 g.drawImage(ResourceMgr.tankD, x, y, null);
@@ -95,11 +112,16 @@ public class Tank {
             default:
                 break;
         }
+        if(random.nextInt(10) > 8) this.fire();
     }
 
     public void fire(){
         int bx = x + Tank.WIDTH/2 - Bullet.WIDTH/2;
         int by = y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
-        tf.bullets.add(new Bullet(bx, by, this.dir, tf));
+        tf.bullets.add(new Bullet(bx, by, this.dir,this.group, tf));
+    }
+
+    public void die(){
+        this.isLiving = false;
     }
 }

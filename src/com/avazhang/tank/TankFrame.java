@@ -10,10 +10,10 @@ import java.util.List;
 
 public class TankFrame extends Frame {
     static final int GAME_WIDTH = 800, GAME_HEIGHT = 600;
-    Tank myTank = new Tank(200, 500, Dir.DOWN, this);
+    Tank myTank = new Tank(200, 500, Dir.DOWN, Group.GOOD, this);
     List<Bullet> bullets = new ArrayList<>();
     List<Tank> tanks = new ArrayList<>();
-    Bullet b = new Bullet(200, 200, Dir.DOWN, this);
+    Bullet b = new Bullet(200, 200, Dir.DOWN, Group.GOOD, this);
 
     public TankFrame() throws HeadlessException {
         this.setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -59,17 +59,30 @@ public class TankFrame extends Frame {
         Color c = g.getColor();
         g.setColor(Color.GREEN);
         g.drawString("Bullets quantity:" + bullets.size(), 350, 60);
+        g.drawString("Enemies quantity:" + tanks.size(), 350, 100);
         g.setColor(c);
 
+        //draw my tank
         myTank.paint(g);
+        myTank.setMoving(false);
 
+        //draw enemy tanks
         for(int i = 0; i < tanks.size(); i++){
             tanks.get(i).paint(g);
+        }
+
+        //
+        for(int i = 0; i < bullets.size(); i++){
+            for(int j = 0; j < tanks.size(); j++){
+                bullets.get(i).collideWith(tanks.get(j));
+            }
         }
         //this method will cause concurrent problem
 //        for(Bullet b : bullets){
 //            b.paint(g);
 //        }
+
+        //draw my tank's bullets
         for(int i = 0; i < bullets.size(); i++){
             bullets.get(i).paint(g);
         }

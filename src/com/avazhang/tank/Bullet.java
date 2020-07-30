@@ -8,11 +8,23 @@ public class Bullet {
     private Dir dir;
     private boolean live = true;
     private TankFrame tf;
+    private Group group = Group.BAD;
 
-    public Bullet(int x, int y, Dir dir, TankFrame tf){
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+
+
+    public Bullet(int x, int y, Dir dir, Group group, TankFrame tf){
         this.x = x;
         this.y = y;
         this.dir = dir;
+        this.group = group;
         this.tf = tf;
     }
 
@@ -62,5 +74,24 @@ public class Bullet {
         if(x < 0 || y < 0 || x > TankFrame.GAME_WIDTH || y > TankFrame.GAME_HEIGHT){
             live = false;
         }
+
+
+    }
+
+    public void collideWith(Tank tank){
+        if(this.group == tank.getGroup())
+            return;
+
+        //TODO:add Rect field to Tank and Bullet Class
+        Rectangle rect1 = new Rectangle(this.x, this.y, WIDTH, HEIGHT);
+        Rectangle rect2 = new Rectangle(tank.getX(), tank.getY(), tank.WIDTH, tank.HEIGHT);
+        if(rect1.intersects(rect2)){
+            tank.die();
+            this.die();
+        }
+    }
+
+    public void die(){
+        this.live = false;
     }
 }

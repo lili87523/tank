@@ -17,7 +17,7 @@ public class MainTest {
         TankFrame tf = new TankFrame();
         //initiate enemy tanks
         for(int i = 0; i < 5; i++){
-            tf.tanks.add(new Tank(50 + i * 80, 200, Dir.DOWN, tf));
+            tf.tanks.add(new Tank(50 + i * 80, 200, Dir.DOWN, Group.BAD, tf));
         }
        // CopyTankFrame ctf = new CopyTankFrame();
         while(true){

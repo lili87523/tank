@@ -9,12 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TankFrame extends Frame {
-    static final int GAME_WIDTH = 800, GAME_HEIGHT = 600;
+    static final int GAME_WIDTH = 1000, GAME_HEIGHT = 800;
     Tank myTank = new Tank(200, 500, Dir.DOWN, Group.GOOD, this);
     List<Bullet> bullets = new ArrayList<>();
     List<Tank> tanks = new ArrayList<>();
     Bullet b = new Bullet(200, 200, Dir.DOWN, Group.GOOD, this);
-    Explode e = new Explode(100, 100, this);
+    List<Explode> explodes = new ArrayList<>();
+    //Explode e = new Explode(100, 100, this);
     public TankFrame() throws HeadlessException {
         this.setSize(GAME_WIDTH, GAME_HEIGHT);
         this.setResizable(true);
@@ -34,7 +35,7 @@ public class TankFrame extends Frame {
 
     //to avoid the blink on the screen, we can draw our image in memory, and after it is ready, transfer it all-in-one to the screen
     //update() is called before paint()
-    Image offScreenImage = null;
+   /* Image offScreenImage = null;
     @Override
     public void update(Graphics g){
         if(offScreenImage == null){
@@ -47,7 +48,7 @@ public class TankFrame extends Frame {
         gOffScreen.setColor(c);
         paint(gOffScreen);
         g.drawImage(offScreenImage, 0, 0, null);
-    }
+    } */
 
     /*The method of paint will be automatically called whenever the window will be changed.
     except closing*/
@@ -57,9 +58,12 @@ public class TankFrame extends Frame {
         //x += 10;  //change the coordinate so the rectangle will move
         //y += 10;
         Color c = g.getColor();
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
         g.setColor(Color.GREEN);
         g.drawString("Bullets quantity:" + bullets.size(), 350, 60);
         g.drawString("Enemies quantity:" + tanks.size(), 350, 100);
+        g.drawString("Explodes quantity:" + explodes.size(), 350, 140);
         g.setColor(c);
 
         //draw my tank
@@ -71,11 +75,15 @@ public class TankFrame extends Frame {
             tanks.get(i).paint(g);
         }
 
-        //
+        //draw bullets
         for(int i = 0; i < bullets.size(); i++){
             for(int j = 0; j < tanks.size(); j++){
                 bullets.get(i).collideWith(tanks.get(j));
             }
+        }
+        //draw explodes
+        for(int i = 0; i < explodes.size(); i++){
+            explodes.get(i).paint(g);
         }
         //this method will cause concurrent problem
 //        for(Bullet b : bullets){
@@ -86,7 +94,7 @@ public class TankFrame extends Frame {
         for(int i = 0; i < bullets.size(); i++){
             bullets.get(i).paint(g);
         }
-        e.paint(g);
+       // e.paint(g);
     }
 
 

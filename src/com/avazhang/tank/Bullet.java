@@ -9,6 +9,7 @@ public class Bullet {
     private boolean live = true;
     private TankFrame tf;
     private Group group = Group.BAD;
+    Rectangle rect = new Rectangle();
 
     public Group getGroup() {
         return group;
@@ -26,6 +27,10 @@ public class Bullet {
         this.dir = dir;
         this.group = group;
         this.tf = tf;
+        rect.x = this.x;
+        rect.y = this.y;
+        rect.width = WIDTH;
+        rect.height = HEIGHT;
     }
 
     public void paint(Graphics g){
@@ -75,7 +80,9 @@ public class Bullet {
             live = false;
         }
 
-
+        //UPDATE RECT coordinate
+        rect.x = this.x;
+        rect.y = this.y;
     }
 
     public void collideWith(Tank tank){
@@ -83,11 +90,12 @@ public class Bullet {
             return;
 
         //TODO:add Rect field to Tank and Bullet Class
-        Rectangle rect1 = new Rectangle(this.x, this.y, WIDTH, HEIGHT);
-        Rectangle rect2 = new Rectangle(tank.getX(), tank.getY(), tank.WIDTH, tank.HEIGHT);
-        if(rect1.intersects(rect2)){
+        //Rectangle rect1 = new Rectangle(this.x, this.y, WIDTH, HEIGHT);
+        //Rectangle rect2 = new Rectangle(tank.getX(), tank.getY(), tank.WIDTH, tank.HEIGHT);
+        if(this.rect.intersects(tank.rect)){
             tank.die();
             this.die();
+            tf.explodes.add(new Explode(x, y, tf));
         }
     }
 
